@@ -1,7 +1,7 @@
 {
   "name": "vendor-be",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "./src/server.ts",
   "dependencies": {
     "axios": "^1.7.7",
     "body-parser": "^1.20.3",
@@ -13,16 +13,26 @@
     "neo4j-driver": "^5.26.0"
   },
   "scripts": {
-    "start": "nodemon src/server.js",
+    "start": "nodemon src/server.ts",
     "test": "jest --detectOpenHandles",
     "test-watch": "jest --watch",
-    "cluster": "pm2 start src/server.js -i max"
+    "cluster": "pm2 start src/server.ts -i max",
+    "build": "tsc",
+    "dev": "nodemon src/server.ts",
+    "lint": "eslint ./src/**/.ts"
   },
   "author": "",
   "license": "ISC",
   "description": "",
   "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^8.14.0",
+    "@typescript-eslint/parser": "^8.14.0",
+    "eslint": "^9.14.0",
     "nodemon": "^3.1.7",
+    "ts-node": "^10.9.2",
     "typescript": "^5.6.3"
+  },
+  "engines": {
+    "node": "v20.11.0"
   }
 }

@@ -2,9 +2,9 @@ const express = require("express");
 //const morgan = require("morgan");
 const path = require("path");
 const cors = require("cors");
-require("dotenv").config();
+import { config } from "dotenv"
 const api = require("./routes/api");
-
+config()
 const app = express();
 app.use(cors());
 //app.use(morgan("combined"));

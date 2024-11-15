@@ -1,4 +1,4 @@
-const neo4j = require("neo4j-driver");
+import * as neo4j from "neo4j-driver";
 
 const uri = process.env.NEO4J_URI;
 const user = process.env.NEO4J_USER;
@@ -21,4 +21,4 @@ const closeConnection = async () => {
   }
 };
 
-module.exports = {getSession, closeConnection};
+module.exports = { getSession, closeConnection };
