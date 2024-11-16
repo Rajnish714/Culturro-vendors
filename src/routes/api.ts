@@ -1,6 +1,6 @@
-const express = require("express");
+import express from "express";
 
-const { vendorsRouter } = require("./vendors/vendors.router");
+import { vendorsRouter } from "./vendors/vendors.router";
 import { productsRouter } from "./products/product.router";
 const api = express.Router();
 
@@ -8,4 +8,4 @@ const api = express.Router();
 api.use("/auth/vendor", vendorsRouter);
 api.use("/vendor/product", productsRouter);
 
-module.exports = api;
+export { api }

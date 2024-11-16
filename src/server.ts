@@ -1,7 +1,8 @@
-require("dotenv").config();
-const http = require("http");
-const app = require("./app");
-const {getSession, closeConnection} = require("./services/db");
+import { config } from "dotenv"
+config()
+import http from "http";
+import { app } from "./app";
+import { getSession, closeConnection } from "./services/db";
 
 const server = http.createServer(app);
 
