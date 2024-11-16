@@ -1,8 +1,10 @@
 const express = require("express");
-const {httpPostRegisterVendor} = require("./vendors.controller");
+const { httpPostRegisterVendor, httpPostLoginVendor } = require("./vendors.controller");
 
 const vendorsRouter = express.Router();
 
-vendorsRouter.post("/", httpPostRegisterVendor);
+vendorsRouter.post("/signup", httpPostRegisterVendor);
+vendorsRouter.post("/login", httpPostLoginVendor);
 
-module.exports = {vendorsRouter};
+
+module.exports = { vendorsRouter };
