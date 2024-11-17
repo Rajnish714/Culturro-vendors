@@ -1,6 +1,8 @@
 
 import { getSession } from '../services/db';
 
+//-------------------------------------Create Product-------------------------------------------------------
+
 export const createProduct = async (product, vendor_id) => {
     const session = getSession();
     try {
@@ -40,8 +42,6 @@ export const createProduct = async (product, vendor_id) => {
         };
 
         const result = await session.run(query, params);
-
-        // Properly close the session
         session.close();
 
         if (result.records.length > 0) {
@@ -51,11 +51,8 @@ export const createProduct = async (product, vendor_id) => {
         }
     } catch (error) {
         console.log("Error during product creation:", error);
-
-        // Ensure session is closed in case of error
         session.close();
-
-        throw error; // Propagate the error to handle it in the calling function
+        throw error;
     }
 };
 
@@ -63,7 +60,7 @@ export const createProduct = async (product, vendor_id) => {
 //-------------- find Products By VendorId --------------------------------
 
 
-export const findProductsByVendorId = async (vendor_id, productName = null) => {
+export const findProductsByVendorId = async (vendor_id: string, productName = null) => {
     console.log(productName);
 
     const session = getSession();
@@ -86,6 +83,73 @@ export const findProductsByVendorId = async (vendor_id, productName = null) => {
     } catch (error) {
         console.log("Error during finding products:", error);
         session.close();
-        throw error; // Propagate the error to handle it in the calling function 
+        throw error;
+    }
+}
+
+
+//----------------------------------update product------------------------------
+export const updateProductById = async (product_id: string, vendor_id: string, updates: { name?: string; description?: string; price?: string; category?: string; stockQuantity?: number; images?: string[] }) => {
+    const session = getSession();
+
+    try {
+        let setClauses = [];
+        let params: { [key: string]: any } = { product_id, vendor_id };
+
+        if (updates.name) {
+            setClauses.push('p.name = $name');
+            params.name = updates.name;
+        }
+        if (updates.description) {
+            setClauses.push('p.description = $description');
+            params.description = updates.description;
+        }
+        if (updates.price) {
+            setClauses.push('p.price = $price');
+            params.price = updates.price;
+        }
+        if (updates.category) {
+            setClauses.push('p.category = $category');
+            params.category = updates.category;
+        }
+        if (updates.stockQuantity) {
+            setClauses.push('p.stockQuantity = $stockQuantity');
+            params.stockQuantity = updates.stockQuantity;
+        }
+
+        const setClause = setClauses.join(', ');
+
+        const query = `
+        MATCH (v:Vendor {user_id: $vendor_id})-[:SELLS]->(p:Product {id: $product_id})
+        SET ${setClause}, p.updatedAt = timestamp()
+        RETURN p
+      `;
+
+        const result = await session.run(query, params);
+        session.close();
+
+        return result.records[0]?.get('p').properties;
+    } catch (error) {
+        console.log("Error during updating product:", error);
+        session.close();
+        throw error;
+    }
+};
+
+//-----------------Delete Product-----------------------------------------------------------------------------------------
+
+export const deleteProductById = async (product_id: string, vendor_id: string) => {
+    const session = getSession();
+    try {
+        const query = ` MATCH (v:Vendor {user_id: $vendor_id})-[:SELLS]->(p:Product {id: $product_id})
+          DETACH DELETE p `;
+        const params = { product_id, vendor_id };
+        const result = await session.run(query, params);
+        session.close();
+        return result.summary.counters.updates().nodesDeleted;
+    } catch (error) {
+        console.log("Error during deleting product:", error);
+        session.close();
+        throw error;
     }
 }

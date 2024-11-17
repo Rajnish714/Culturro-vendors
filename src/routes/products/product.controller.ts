@@ -1,4 +1,4 @@
-import { createProduct, findProductsByVendorId } from "../../modules/products.module"
+import { createProduct, findProductsByVendorId, deleteProductById, updateProductById } from "../../modules/products.module"
 
 export async function httpPostCreateProduct(req, res) {
 
@@ -35,12 +35,57 @@ export async function httpPostCreateProduct(req, res) {
 
 export const httpGetProductsByVendorId = async (req, res) => {
     const { name } = req.query;
-    // Assuming the product name is passed as a query parameter 
+    //  product name is passed as a query parameter 
     try {
         const products = await findProductsByVendorId(req.user.id, name ? name.toString() : null); // Ensure req.user contains the authenticated user's info
         res.status(200).json(products);
     } catch (error) {
         console.error("Error finding products:", error);
+        res.status(400).json({ message: error.message });
+    }
+};
+
+
+//---------------update product-------------------------------------
+
+
+export const httpUpdateProduct = async (req, res) => {
+    const { product_id } = req.params; // Assuming the product ID is passed as a URL parameter
+    const updates = req.body; // Assuming the updates are sent in the request body
+    console.log("ye hai data", updates);
+
+    try {
+        const updatedProduct = await updateProductById(product_id, req.user.id, updates); // Ensure req.user contains the authenticated user's info
+
+        if (updatedProduct) {
+            res.status(200).json(updatedProduct);
+        } else {
+            res.status(404).json({ message: 'Product not found or not authorized' });
+        }
+    } catch (error) {
+        console.error("Error updating product:", error);
+        res.status(400).json({ message: error.message });
+    }
+};
+
+
+
+//-------------delete product------------------------------------------
+
+export const httpDeleteProduct = async (req, res) => {
+    const { product_id } = req.params; // Assuming the product ID is passed as a URL parameter
+    console.log("ye hai product id", product_id);
+
+    try {
+        const nodesDeleted = await deleteProductById(product_id, req.user.id); // Ensure req.user contains the authenticated user's info
+
+        if (nodesDeleted > 0) {
+            res.status(200).json({ message: 'Product deleted successfully' });
+        } else {
+            res.status(404).json({ message: 'Product not found or not authorized' });
+        }
+    } catch (error) {
+        console.error("Error deleting product:", error);
         res.status(400).json({ message: error.message });
     }
 };
