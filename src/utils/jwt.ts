@@ -9,9 +9,7 @@ export function generateToken(payload: object): string {
 export function verifyToken(token: string): object | null {
     try {
         const decriptedToken = jwt.verify(token, secretKey);
-        console.log("token hai", decriptedToken);
         return decriptedToken
-
 
     } catch (error) {
         return null;

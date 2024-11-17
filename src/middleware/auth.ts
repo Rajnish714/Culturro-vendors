@@ -5,26 +5,17 @@ import { Request } from "express"
 // }
 function verifyTokenOnload(req, res, next) {
 
+
     if (!req.headers["authorization"]) {
-        throw new Error("error hai")
+        throw new Error("no authorization token found!")
     }
     const token = String(req.headers["authorization"]).split(" ")[1] // Access the token from the cookie if (!token) return res.status(401).json({ message: 'Unauthorized' });
-
-
-
-
     if (token) {
-
         const verifiedUser = verifyToken(token);
-
-
 
         if (verifiedUser) {
             //req.user = verifiedUser;
             req.user = verifiedUser
-
-
-
         }
     }
 

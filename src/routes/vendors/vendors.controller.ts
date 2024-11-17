@@ -58,10 +58,7 @@ export async function httpPostLoginVendor(req, res) {
     console.error("Error during login:", error);
   }
 }
-// export async function httpPostLogoutVendor(req, res) {
-//   req.session = null; // Clear the session
-//   return res.status(200).json({ message: "Logged out successfully" });
-// }
+//------------------------LogOut-------------------------------------------
 export async function httpPostLogoutVendor(req, res) {
 
   res.clearCookie('token', { path: '/' });// Clear the token cookie
