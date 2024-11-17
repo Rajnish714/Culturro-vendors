@@ -1,7 +1,8 @@
 import express from "express";
 
-import { httpGetAllProducts } from "./product.controller"
+import { httpPostCreateProduct } from "./product.controller" // in get req httpGetAllProducts
 const productsRouter = express.Router();
-productsRouter.get("/product", httpGetAllProducts);
+productsRouter.post("/create", httpPostCreateProduct)
+//productsRouter.get("/product", httpGetAllProducts);
 
 export { productsRouter }

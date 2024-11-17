@@ -87,7 +87,7 @@
         });
 
         async function updateAuthStatus() {
-            const response = await fetch('/v1/protected', {
+            const response = await fetch('/v1/auth/vendor/login', {
                 method: 'GET'
             });
 

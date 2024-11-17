@@ -10,7 +10,7 @@ interface Vendor {
 }
 
 const createVendor = async (name: string, email: string, password: string): Promise<Vendor> => {
-  const session = await getSession();
+  const session = getSession();
 
   try {
     const checkQuery = `MATCH (v:Vendor {email: $email}) RETURN v`;
@@ -24,7 +24,7 @@ const createVendor = async (name: string, email: string, password: string): Prom
     const id = uuidv4();
 
     const query = `
-      CREATE (v:Vendor {user_id: $id, name: $name, email: $email, password: $password})
+      CREATE (v:Vendor {vendor_id: $id, name: $name, email: $email, password: $password})
       RETURN v
     `;
     const params = { id, name, email, password: hashedPassword };
