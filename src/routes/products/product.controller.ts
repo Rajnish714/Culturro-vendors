@@ -1,11 +1,13 @@
-import { createProduct, findProductsByVendorId, deleteProductById, updateProductById } from "../../modules/products.module"
+import { createProduct, getAllProducts, getAllProductsByVendorId, deleteProductById, updateProductById } from "../../modules/products.module"
 
 export async function httpPostCreateProduct(req, res) {
 
     const products = req.body
-    const userId = req.user
+    console.log(products, "ye aaya product");
 
-    if (!userId || !userId.id) {
+    const vendorId = req.user
+
+    if (!vendorId || !vendorId.id) {
         return res.status(400).json({ message: 'User ID is missing' });
     }
 
@@ -14,7 +16,7 @@ export async function httpPostCreateProduct(req, res) {
         if (!products) {
             return res.status(400).json({ message: "All fields are required" });
         }
-        const product = await createProduct(products, userId.id)
+        const product = await createProduct(products, vendorId.id)
         console.log(product);
 
         res.status(201).json({ message: "product successfully added", product }
@@ -30,14 +32,26 @@ export async function httpPostCreateProduct(req, res) {
     }
 }
 
-//---------------get Vendor Product-------------------------
 
+export const httpGetAllProducts = async (req, res) => {
+    const { name } = req.query;
+
+    try {
+        const products = await getAllProducts(req.user.id, name ? name.toString() : null);
+        res.status(200).json(products);
+    } catch (error) {
+        console.error("Error finding products:", error);
+        res.status(400).json({ message: error.message });
+    }
+};
 
 export const httpGetProductsByVendorId = async (req, res) => {
-    const { name } = req.query;
-    //  product name is passed as a query parameter 
+    const { product_id } = req.params;
+    console.log(product_id);
+
+
     try {
-        const products = await findProductsByVendorId(req.user.id, name ? name.toString() : null); // Ensure req.user contains the authenticated user's info
+        const products = await getAllProductsByVendorId(product_id, req.user.id);
         res.status(200).json(products);
     } catch (error) {
         console.error("Error finding products:", error);
@@ -46,16 +60,14 @@ export const httpGetProductsByVendorId = async (req, res) => {
 };
 
 
-//---------------update product-------------------------------------
 
 
 export const httpUpdateProduct = async (req, res) => {
-    const { product_id } = req.params; // Assuming the product ID is passed as a URL parameter
-    const updates = req.body; // Assuming the updates are sent in the request body
-    console.log("ye hai data", updates);
+    const { product_id } = req.params;
+    const updates = req.body;
 
     try {
-        const updatedProduct = await updateProductById(product_id, req.user.id, updates); // Ensure req.user contains the authenticated user's info
+        const updatedProduct = await updateProductById(product_id, req.user.id, updates);
 
         if (updatedProduct) {
             res.status(200).json(updatedProduct);
@@ -63,21 +75,21 @@ export const httpUpdateProduct = async (req, res) => {
             res.status(404).json({ message: 'Product not found or not authorized' });
         }
     } catch (error) {
-        console.error("Error updating product:", error);
+
         res.status(400).json({ message: error.message });
     }
 };
 
 
 
-//-------------delete product------------------------------------------
+
 
 export const httpDeleteProduct = async (req, res) => {
-    const { product_id } = req.params; // Assuming the product ID is passed as a URL parameter
+    const { product_id } = req.params;
     console.log("ye hai product id", product_id);
 
     try {
-        const nodesDeleted = await deleteProductById(product_id, req.user.id); // Ensure req.user contains the authenticated user's info
+        const nodesDeleted = await deleteProductById(product_id, req.user.id);
 
         if (nodesDeleted > 0) {
             res.status(200).json({ message: 'Product deleted successfully' });

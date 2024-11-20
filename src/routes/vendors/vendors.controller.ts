@@ -10,11 +10,11 @@ export async function httpPostRegisterVendor(req, res) {
     }
 
     const vendor = await createVendor(name, email, password);
-    const token = generateToken({ id: vendor.user_id, email: vendor.email });
+    const token = generateToken({ id: vendor.vendor_id, email: vendor.email });
     res.cookie('token', token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production', // Set secure flag only in production 
-      maxAge: 3600000 // 1 hour 
+      secure: process.env.NODE_ENV === 'production',
+      maxAge: 86400000
     });
 
     res.status(201).json({ message: "Vendor created successfully", token, vendor });
@@ -31,19 +31,20 @@ export async function httpPostRegisterVendor(req, res) {
 export async function httpPostLoginVendor(req, res) {
   const { email, password } = req.body;
 
+
   try {
     if (!email || !password) {
       return res.status(400).json({ message: "Email and password are required" });
     }
 
     const loginResponse = await loginVendor(email, password);
-    const token = generateToken({ id: loginResponse.vendor.user_id, email: loginResponse.vendor.email });
+    const token = generateToken({ id: loginResponse.vendor.vendor_id, email: loginResponse.vendor.email });
 
 
     res.cookie('token', token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production', // Set secure flag only in production 
-      maxAge: 3600000 // 1 hour 
+      secure: process.env.NODE_ENV === 'production',
+      maxAge: 86400000
     });
 
     res.status(200).json({ message: "Login successful", token, vendor: loginResponse.vendor });
@@ -58,10 +59,8 @@ export async function httpPostLoginVendor(req, res) {
     console.error("Error during login:", error);
   }
 }
-//------------------------LogOut-------------------------------------------
+
 export async function httpPostLogoutVendor(req, res) {
-
-  res.clearCookie('token', { path: '/' });// Clear the token cookie
-
+  res.clearCookie('token', { path: '/' });
   return res.status(200).json({ message: 'Logged out successfully' });
 }
