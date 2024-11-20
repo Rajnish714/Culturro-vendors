@@ -1,19 +1,49 @@
 {
-  "name": "culturro",
+  "name": "vendor-be",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "./src/server.ts",
+  "dependencies": {
+    "axios": "^1.7.7",
+    "bcrypt": "^5.1.1",
+    "body-parser": "^1.20.3",
+    "cookie-parser": "^1.4.7",
+    "cookie-session": "^2.1.0",
+    "cors": "^2.8.5",
+    "daemon": "^1.1.0",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.1",
+    "express-session": "^1.18.1",
+    "init": "^0.1.2",
+    "jsonwebtoken": "^9.0.2",
+    "neo4j-driver": "^5.26.0",
+    "uuid": "^11.0.3"
+  },
   "scripts": {
-    "install-client": "npm install --prefix client",
-    "install-server": "npm install --prefix server",
-    "install": "npm run install-server && npm run install-client",
-    "server": "npm run watch --prefix server",
-    "client": "npm start --prefix client",
-    "watch": "npm run client && npm run server",
-    "deploy": "npm run build --prefix client && npm run server",
-    "deploy-cluster": "npm run build --prefix client && npm run cluster --prefix server",
-    "test": "npm  test --prefix server && npm test --prefix client"
+    "start": "nodemon src/server.js",
+    "test": "jest --detectOpenHandles",
+    "test-watch": "jest --watch",
+    "cluster": "pm2 start src/server.ts -i max",
+    "build": "tsc",
+    "dev": "nodemon src/server.ts",
+    "lint": "eslint ./src/**/.ts"
   },
   "author": "",
   "license": "ISC",
-  "description": ""
+  "description": "",
+  "devDependencies": {
+    "@types/bcrypt": "^5.0.2",
+    "@types/cookie-parser": "^1.4.7",
+    "@types/cookie-session": "^2.0.49",
+    "@types/cors": "^2.8.17",
+    "@types/express-session": "^1.18.0",
+    "@typescript-eslint/eslint-plugin": "^8.14.0",
+    "@typescript-eslint/parser": "^8.14.0",
+    "eslint": "^9.14.0",
+    "nodemon": "^3.1.7",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.6.3"
+  },
+  "engines": {
+    "node": "v20.11.0"
+  }
 }
